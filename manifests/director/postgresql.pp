@@ -56,7 +56,6 @@ class bacula::director::postgresql (
     exec { 'make_db_tables':
       command     => "/bin/true",
       refreshonly => true,
-      before      => Service['bacula-dir'],
     }
   }
 }
