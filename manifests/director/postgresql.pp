@@ -39,11 +39,10 @@ class bacula::director::postgresql (
     postgresql::db { $db_database:
       user     => $db_user,
       password => $db_password
-#      before  => Package[$::bacula::params::director_postgresql_package]
     } -> Package[$::bacula::params::director_postgresql_package]
 
     $db_host = ''
-    $db_port = ''
+    $db_port = undef
 
     file { '/etc/dbconfig-common/bacula-director-pgsql.conf':
       ensure  => file,
