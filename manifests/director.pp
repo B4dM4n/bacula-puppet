@@ -210,6 +210,14 @@ class bacula::director (
           db_database => $db_database,
         }
       }
+      'postgresql'  : {
+        class { '::bacula::director::postgresql':
+          db_database  => $db_database,
+          db_user      => $db_user,
+          db_password  => $db_password,
+          manage_db    => $manage_db,
+        }
+      }
       default  : {
         fail "The bacula module does not support managing the ${db_backend} backend database"
       }

@@ -135,18 +135,14 @@ class bacula::params::validate (
     }
 
     case $db_backend {
-      'sqlite', 'postgresql' : {
+      'sqlite' : {
       }
-      'mysql'                : {
-        if empty($db_host) {
-          fail '$db_host cannot be empty'
-        }
-
+      'mysql', 'postgresql' : {
         if empty($db_user) {
           fail '$db_user cannot be empty'
         }
 
-        if !is_integer($db_port) {
+        if !empty($db_port) and !is_integer($db_port) {
           fail '$db_port must be a port number'
         }
 
@@ -154,7 +150,7 @@ class bacula::params::validate (
           fail '$db_password cannot be empty'
         }
       }
-      default                : {
+      default : {
         fail '$db_backend must be either \'sqlite\', \'postgresql\', or \'mysql\''
       }
     }
