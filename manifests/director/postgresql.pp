@@ -34,12 +34,13 @@ class bacula::director::postgresql (
   include ::bacula::params
 
   if $manage_db {
-    include postgresql::server
-
+    class { 'postgresql::server': 
+    } ->
     postgresql::db { $db_database:
       user     => $db_user,
       password => $db_password
-    }
+#      before  => Package[$::bacula::params::director_postgresql_package]
+    } -> Package[$::bacula::params::director_postgresql_package]
 
     $db_host = ''
     $db_port = ''
