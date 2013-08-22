@@ -41,13 +41,22 @@ class bacula::director::postgresql (
       password => $db_password
     }
 
+    $db_host = ''
+    $db_port = ''
+
     file { '/etc/dbconfig-common/bacula-director-pgsql.conf':
       ensure  => file,
       owner   => 'root',
       group   => 'root',
       mode    => '0600',
-      content => template('bacula-director-pgsql.conf.erb'),
-      before  => package[$::bacula::params::director_postgresql_package]
+      content => template('bacula/bacula-director-pgsql.conf.erb'),
+      before  => Package[$::bacula::params::director_postgresql_package]
+    }
+
+    exec { 'make_db_tables':
+      command     => "/bin/true",
+      refreshonly => true,
+      before      => Service['bacula-dir'],
     }
   }
 }
