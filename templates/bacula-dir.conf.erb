@@ -38,9 +38,9 @@ Director {
 # this should be how to connect to whatever database we're using)
 Catalog {
   Name = "<%= director_server_real -%>:<%= db_backend -%>"
-  dbname = "<%= db_database -%>"; dbdriver = dbi:<%= db_backend %>
+  dbname = "<%= db_database -%>"; dbdriver = "dbi:<%= db_backend %>"
   <% if db_backend != 'sqlite' # sqlite doesn't require these settings -%>
-  dbaddress = <%= db_host %>; dbport = <%= db_port %>; user = <%= db_user %>; password = <%= db_password %>
+  dbaddress = "<%= db_host %>"; dbport = "<%= db_port %>"; user = "<%= db_user %>"; password = "<%= db_password %>"
   <% end -%>
 }
 
