@@ -247,7 +247,8 @@ class bacula::director (
   # Instead of restarting the <code>bacula-dir</code> service which could interrupt running jobs tell the director to reload its
   # configuration.
   exec { 'bacula-dir reload':
-    command     => '/bin/echo reload | /usr/sbin/bconsole',
+    command     => 'echo reload | bconsole',
+    path   => "/usr/bin:/usr/sbin:/bin",
     logoutput   => on_failure,
     refreshonly => true,
     timeout     => 10,

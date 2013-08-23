@@ -9,7 +9,7 @@
 #
 # === Copyright
 #
-# Copyright 2012 Russell Harrison
+# Copyright 2013 Fabian Möller
 #
 # === License
 #

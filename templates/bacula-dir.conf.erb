@@ -332,7 +332,7 @@ Schedule {
 
 Schedule {
   Name = "WeeklyCycleAfterBackup"
-  Run = Level=Full Mon-Sun at 23:10
+  Run = Level=Full Mon-Sun at 23:55
 }
 
 Schedule {
@@ -400,6 +400,10 @@ Schedule {
   Run = Level=Incremental hourly at 0:30
 }
 
+Schedule {
+  Name = "Never"
+}
+
 # JOB DEFINITIONS -------------------------------------------------------------
 # Create the types of jobs we need to run.
 
@@ -415,9 +419,9 @@ Job {
   Messages = "<%= @director_server_real -%>:messages:standard"
   Pool = "<%= @storage_server_real -%>:pool:catalog"
   # This creates an ASCII copy of the catalog
-  RunBeforeJob = "/usr/libexec/bacula/make_catalog_backup.pl <%= @director_server_real -%>:<%= @db_backend -%>"
+  RunBeforeJob = "/etc/bacula/scripts/make_catalog_backup.pl <%= @director_server_real -%>:<%= @db_backend -%>"
   # This deletes the copy of the catalog
-  RunAfterJob  = "/usr/libexec/bacula/delete_catalog_backup"
+  RunAfterJob  = "/etc/bacula/scripts/delete_catalog_backup"
   Write Bootstrap = "/var/lib/bacula/BackupCatalog.bsr"
   # Run after main backup
   Priority = 50
