@@ -77,7 +77,8 @@ class bacula::storage (
   }
 
   package { $db_package:
-    ensure => present,
+    ensure => latest,
+    notify => Service['bacula-sd'],
   }
 
   file { [$storage_default_mount, "${storage_default_mount}/default"]:

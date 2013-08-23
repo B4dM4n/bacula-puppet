@@ -38,7 +38,7 @@ class bacula::console::bat {
   include ::bacula::params
 
   package { $::bacula::params::bat_console_package:
-    ensure  => present,
+    ensure  => latest,
   }
 
   file { '/etc/bacula/bat.conf':

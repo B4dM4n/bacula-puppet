@@ -45,7 +45,7 @@ class bacula::console (
   }
 
   package { $::bacula::params::console_package:
-    ensure => present,
+    ensure => latest,
   }
 
   file { '/etc/bacula/bconsole.conf':

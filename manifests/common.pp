@@ -56,7 +56,7 @@ class bacula::common (
     }
 
     package { $packages:
-      ensure => installed,
+      ensure => latest,
       notify => $packages_notify,
     }
   }

@@ -51,7 +51,8 @@ class bacula::client (
   }
 
   package { 'bacula-client':
-    ensure => present,
+    ensure => latest,
+    notify => Service['bacula-fd'],
   }
 
   $file_requires = $plugin_dir ? {

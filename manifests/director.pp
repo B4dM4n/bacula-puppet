@@ -125,7 +125,8 @@ class bacula::director (
   }
 
   package { $db_package:
-    ensure => present,
+    ensure => latest,
+    notify => Service['bacula-dir'],
   }
 
   $config_dir_source = $manage_config_dir ? {
