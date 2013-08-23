@@ -6,6 +6,9 @@ Copyright (c) 2011, Puppet Labs Inc.
 Author: Russell Harrison <rharrison@fedoraproject.org>
 Copyright (c) 2012-2013, Russell Harrison
 
+Author: Fabian Möller <github@fabian-moeller.net>
+Copyright (c) 2013, Fabian Möller
+
 # About
 
 This module manages the [Bacula](http://bacula.org) backup solution.  Through
@@ -20,12 +23,12 @@ This module is a fork of the [Puppet Labs](http://puppetlabs.com/)
 * Puppet >=2.6
 * Puppetlabs/stdlib module.  Can be obtained
   [here](http://forge.puppetlabs.com/puppetlabs/stdlib) or with the command
-  `puppet-module install puppetlabs/stdlib`
+  `puppet module install puppetlabs/stdlib`
 
 ## MySQL Database Backend
 * Puppetlabs/mysql module.  Can be obtained
   [here](http://forge.puppetlabs.com/puppetlabs/mysql) or with the command
-  `puppet-module install puppetlabs/mysql`
+  `puppet module install puppetlabs/mysql`
 * Declare the `mysql::server` class to set up a MySQL server on the Bacula
   director node and set `manage_db` to true to have the bacula module manage the
   MySQL database.
@@ -33,7 +36,12 @@ This module is a fork of the [Puppet Labs](http://puppetlabs.com/)
 ## SQLite Database backend
 * Puppetlabs/sqlite module.  Can be obtained
   [here](http://forge.puppetlabs.com/puppetlabs/sqlite) or with the command
-  `puppet-module install puppetlabs/sqlite`
+  `puppet module install puppetlabs/sqlite`
+
+## Postgres Database backend
+* Puppetlabs/postgresql module.  Can be obtained
+  [here](http://forge.puppetlabs.com/puppetlabs/postgresql) or with the command
+  `puppet module install puppetlabs/postgresql`
 
 # Installation
 
