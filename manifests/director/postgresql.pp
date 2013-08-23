@@ -38,7 +38,8 @@ class bacula::director::postgresql (
     } ->
     postgresql::db { $db_database:
       user     => $db_user,
-      password => $db_password
+      password => $db_password,
+      charset  => 'SQL_ASCII',
     } -> Package[$::bacula::params::director_postgresql_package]
 
     $db_host = ''
