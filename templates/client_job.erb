@@ -1,5 +1,5 @@
 Job {
-  Name     = "<%= @name %>"
+  Name     = "<%= @job_name %>"
   Client   = "<%= @client_name %>"
   Type     = Backup
   FileSet  = "<%= @fileset %>"
@@ -45,7 +45,7 @@ Job {
 }
 
 Job {
-  Name     = "<%= @name %> Restore"
+  Name     = "<%= @job_name %> Restore"
   Client   = "<%= @client_name %>"
   Type     = Restore
   FileSet  = "<%= @fileset %>"

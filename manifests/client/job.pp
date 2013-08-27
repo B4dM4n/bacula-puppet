@@ -70,6 +70,7 @@
 # limitations under the License.
 #
 define bacula::client::job (
+  $client_name         = $::fqdn,
   $client_schedule     = 'WeeklyCycle',
   $director_server     = undef,
   $fileset             = 'Basic:noHome',
@@ -84,12 +85,10 @@ define bacula::client::job (
 ) {
   include ::bacula::params
 
-  $name_arr = split($name, ':')
-  $client_name = $name_arr[0]
-  $job_name = $name_arr[1]
+  $job_name = "${client_name}:${name}"
 
   if !is_domain_name($client_name) {
-    fail "Name for client ${name} must be a fully qualified domain name"
+    fail "Name for client ${client_name} must be a fully qualified domain name"
   }
 
   case $director_server {
@@ -160,7 +159,7 @@ define bacula::client::job (
     fail "storage_server=${storage_server_real} must be a fully qualified domain name"
   }
 
-  file { "/etc/bacula/bacula-dir.d/${name}.conf":
+  file { "/etc/bacula/bacula-dir.d/${job_name}.conf":
     ensure  => file,
     owner   => 'bacula',
     group   => 'bacula',
