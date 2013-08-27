@@ -3,7 +3,9 @@ FileSet {
   Include {
     Options {
       Signature   = SHA1
-      Compression = GZIP
+<% if @compression -%>
+      Compression = <%= @compression %>
+<% end -%>
     }
 
 <% @include_files.each do |file_include| -%>

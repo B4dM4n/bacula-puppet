@@ -65,7 +65,8 @@ class bacula::director (
   $volume_retention      = '1 Year',
   $volume_retention_diff = '40 Days',
   $volume_retention_full = '1 Year',
-  $volume_retention_incr = '10 Days'
+  $volume_retention_incr = '10 Days',
+  $compression   = 'GZIP'
 ) {
   include ::bacula::params
 

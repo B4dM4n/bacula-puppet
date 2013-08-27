@@ -62,7 +62,8 @@ class bacula::params::validate (
   $volume_autoprune      = '',
   $volume_autoprune_diff = '',
   $volume_autoprune_full = '',
-  $volume_autoprune_incr = ''
+  $volume_autoprune_incr = '',
+  $compression           = ''
 ) {
   include ::bacula::params
   # Validate our booleans
@@ -191,5 +192,9 @@ class bacula::params::validate (
     if !($tls_verify_peer in ['yes', 'no']) {
       fail '$tls_verify_peer must be either \'yes\' or \'no\''
     }
+  }
+
+  if $compressio != undef and $compression !~ /^(GZIP\d?|LZO)$/ {
+    fail '$compression must be one of of GZIP1 to GZIP9, GZIP,  LZO or undef'
   }
 }

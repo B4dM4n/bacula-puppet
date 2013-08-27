@@ -15,6 +15,8 @@
 # [*include_files*]
 #   *Required*: An array of strings consisting of one file or directory name per entry. Directory names should be specified without
 #   a trailing slash with Unix path notation.
+# [*copression*]
+#   The compression level for backups. Value can be GZIP1 to GZIP9, GZIP which defaults to GZIP6 or LZO
 #
 # === Examples
 #
@@ -37,7 +39,8 @@
 define bacula::director::fileset (
   $ensure   = 'file',
   $exclude_files = undef,
-  $include_files = undef
+  $include_files = undef,
+  $compression = 'GZIP'
 ) {
 
   if !($ensure in ['file', 'absent']) {

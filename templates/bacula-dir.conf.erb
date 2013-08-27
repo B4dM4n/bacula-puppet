@@ -216,7 +216,9 @@ FileSet {
   Include {
     Options {
       Signature   = SHA1
-      Compression = GZIP
+<% if @compression -%>
+      Compression = <%= @compression %>
+<% end -%>
     }
 
     # Don't worry about most of the director as Puppet manages the
@@ -258,7 +260,9 @@ FileSet {
   Include {
     Options {
       Signature   = SHA1
-      Compression = GZIP
+<% if @compression -%>
+      Compression = <%= @compression %>
+<% end -%>
     }
 
     File = /boot
@@ -289,8 +293,10 @@ FileSet {
   Name = "Full:Linux"
   Include {
     Options {
-      compression = GZIP
       signature = SHA1
+<% if @compression -%>
+      Compression = <%= @compression %>
+<% end -%>
     }
     File = "\\|bash -c \"df -klP | tail -n +2 | grep '^/dev/' | awk '{print \$6}'\""
 #    File = /
@@ -311,7 +317,9 @@ FileSet {
   Include {
     Options {
       Signature   = SHA1
-      Compression = GZIP
+<% if @compression -%>
+      Compression = <%= @compression %>
+<% end -%>
     }
     File = "/var/spool/bacula/bacula.sql"
   }
@@ -398,10 +406,6 @@ Schedule {
 Schedule {
   Name = "Hourly"
   Run = Level=Incremental hourly at 0:30
-}
-
-Schedule {
-  Name = "Never"
 }
 
 # JOB DEFINITIONS -------------------------------------------------------------

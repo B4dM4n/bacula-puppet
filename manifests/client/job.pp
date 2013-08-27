@@ -1,4 +1,4 @@
-# == Define: bacula::client::config
+# == Define: bacula::client::job
 #
 # Install a config file describing a <code>bacula-fd</code> client on the director.
 #
@@ -6,10 +6,6 @@
 #
 # [*client_schedule*]
 #   The schedule for backups to be performed.
-# [*db_backend*]
-#   The database backend of the catalog storing information about the backup
-# [*director_password*]
-#   The director's password the client is connecting to.
 # [*director_server*]
 #   The FQDN of the director server the client will connect to.
 # [*fileset*]
@@ -42,22 +38,10 @@
 #   settings from the hash.  Note: The <code>RunsWhen</code> key is required.
 # [*storage_server*]
 #   The storage server hosting the pool this client will backup to
-# [*tls_ca_cert*]
-#   The full path and filename specifying a PEM encoded TLS CA certificate(s). Multiple certificates are permitted in
-#   the file. One of <code>TLS CA Certificate File</code> or <code>TLS CA Certificate Dir</code> are required in a server context if
-#   <code>TLS Verify Peer</code> is also specified, and are always required in a client context.
-# [*tls_ca_cert_dir*]
-#   Full path to TLS CA certificate directory. In the current implementation, certificates must be stored PEM
-#   encoded with OpenSSL-compatible hashes, which is the subject name's hash and an extension of .0. One of
-#   <code>TLS CA Certificate File</code> or <code>TLS CA Certificate Dir</code> are required in a server context if <code>TLS Verify Peer</code>
-#   is also specified, and are always required in a client context.
-# [*use_tls*]
-#   Whether to use {Bacula TLS - Communications
-#   Encryption}[http://www.bacula.org/en/dev-manual/main/main/Bacula_TLS_Communications.html].
 #
 # === Examples
 #
-#   bacula::client::config { 'client1.example.com' :
+#   bacula::client::job { 'client1.example.com:default' :
 #     client_schedule   => 'WeeklyCycle',
 #     db_backend        => 'mysql',
 #     director_password => 'directorpassword',
@@ -85,16 +69,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-define bacula::client::config (
-  $director_password   = '',
-  $director_server     = undef,
-  $tls_ca_cert         = undef,
-  $tls_ca_cert_dir     = undef,
-  $tls_require         = 'yes',
-  $use_tls             = false,
-  $db_backend          = undef,
-  $default_job         = true,
+define bacula::client::job (
   $client_schedule     = 'WeeklyCycle',
+  $director_server     = undef,
   $fileset             = 'Basic:noHome',
   $pool                = 'default',
   $pool_diff           = undef,
@@ -103,36 +80,16 @@ define bacula::client::config (
   $rerun_failed_levels = 'no',
   $restore_where       = '/var/tmp/bacula-restores',
   $run_scripts         = undef,
-  $storage_server      = undef,
+  $storage_server      = undef
 ) {
   include ::bacula::params
 
-  if !is_domain_name($name) {
+  $name_arr = split($name, ':')
+  $client_name = $name_arr[0]
+  $job_name = $name_arr[1]
+
+  if !is_domain_name($client_name) {
     fail "Name for client ${name} must be a fully qualified domain name"
-  }
-
-  case $db_backend {
-    undef   : {
-      $db_backend_real = $::bacula::director::db_backend ? {
-        undef   => 'sqlite',
-        default => $::bacula::director::db_backend,
-      }
-    }
-    default : {
-      $db_backend_real = $db_backend
-    }
-  }
-
-  case $director_password {
-    ''      : {
-      $director_password_real = $::bacula::director::director_password ? {
-        undef   => '',
-        default => $::bacula::director::director_password,
-      }
-    }
-    default : {
-      $director_password_real = $director_password
-    }
   }
 
   case $director_server {
@@ -151,20 +108,56 @@ define bacula::client::config (
     fail "director_server=${director_server_real} must be a fully qualified domain name"
   }
 
-  if $default_job {
-    bacula::client::job { "${name}:Default":
-      schedule            => $client_schedule,
-      director_server     => $director_server_real,
-      fileset             => $fileset,
-      pool                => $pool,
-      pool_diff           => $pool_diff,
-      pool_full           => $pool_full,
-      pool_incr           => $pool_incr,
-      rerun_failed_levels => $rerun_failed_levels,
-      restore_where       => $restore_where,
-      run_scripts         => $run_scripts,
-      storage_server      => $storage_server,
-    }  
+  validate_absolute_path($restore_where)
+
+  $pool_diff_real = $pool_diff ? {
+    undef   => "${pool}.differential",
+    default => $pool_diff,
+  }
+
+  $pool_full_real = $pool_full ? {
+    undef   => "${pool}.full",
+    default => $pool_full,
+  }
+
+  $pool_incr_real = $pool_incr ? {
+    undef   => "${pool}.incremental",
+    default => $pool_incr,
+  }
+
+  if !($rerun_failed_levels in ['yes', 'no']) {
+    fail("rerun_failed_levels = ${rerun_failed_levels} must be either 'yes' or 'no'")
+  }
+
+  if $run_scripts {
+    case type($run_scripts) {
+      'array' : {
+        # TODO figure out how to validate each item in the array is a hash.
+        $run_scripts_real = $run_scripts
+      }
+      'hash'  : {
+        $run_scripts_real = [$run_scripts]
+      }
+      default : {
+        fail("run_scripts = ${run_scripts} must be an array of hashes or a hash")
+      }
+    }
+  }
+
+  case $storage_server {
+    undef   : {
+      $storage_server_real = $::bacula::director::storage_server ? {
+        undef   => $::bacula::params::storage_server_default,
+        default => $::bacula::director::storage_server,
+      }
+    }
+    default : {
+      $storage_server_real = $storage_server
+    }
+  }
+
+  if !is_domain_name($storage_server_real) {
+    fail "storage_server=${storage_server_real} must be a fully qualified domain name"
   }
 
   file { "/etc/bacula/bacula-dir.d/${name}.conf":
@@ -172,7 +165,7 @@ define bacula::client::config (
     owner   => 'bacula',
     group   => 'bacula',
     mode    => '0640',
-    content => template('bacula/client_config.erb'),
+    content => template('bacula/client_job.erb'),
     before  => Service['bacula-dir'],
     notify  => Exec['bacula-dir reload'],
   }

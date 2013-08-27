@@ -138,6 +138,8 @@
 # [*volume_retention_incr*]
 #   Length of time to {retain volumes}[http://www.bacula.org/5.0.x-manuals/en/main/main/Configuring_Director.html#VolRetention] in
 #   the default incremental pool.
+# [*copression*]
+#   The compression level for backups. Value can be GZIP1 to GZIP9, GZIP which defaults to GZIP6 or LZO
 #
 # === Sample Usage
 #
@@ -232,7 +234,8 @@ class bacula (
   $volume_retention      = '1 Year',
   $volume_retention_diff = '40 Days',
   $volume_retention_full = '1 Year',
-  $volume_retention_incr = '10 Days'
+  $volume_retention_incr = '10 Days',
+  $compression   = 'GZIP'
 ) {
   include ::bacula::params
 
@@ -297,6 +300,7 @@ class bacula (
     volume_autoprune_diff => $volume_autoprune_diff,
     volume_autoprune_full => $volume_autoprune_full,
     volume_autoprune_incr => $volume_autoprune_incr,
+    compression           => $compression,
   }
 
   class { '::bacula::common':
@@ -358,6 +362,7 @@ class bacula (
       volume_retention_diff => $volume_retention_diff,
       volume_retention_full => $volume_retention_full,
       volume_retention_incr => $volume_retention_incr,
+      compression           => $compression,
     }
 
     if $manage_logwatch_real {
